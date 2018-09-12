@@ -91,6 +91,20 @@ public class OpenshiftIT {
     private void waitForUrlToBeReady(String URL) {
         await()
                 .pollInterval(1, TimeUnit.SECONDS)
+                .atMost(30, TimeUnit.MINUTES)
+                .untilAsserted(() ->
+                        {
+                            Response response = RestAssured
+                                    .given()
+                                    .baseUri(URL)
+                                    .when()
+                                    .get();
+                            System.out.println(response.asString());
+                            Assert.assertEquals(200,response.statusCode());
+                        });
+
+     /*   await()
+                .pollInterval(1, TimeUnit.SECONDS)
                 .atMost(1, TimeUnit.MINUTES)
                 .untilAsserted(() ->
                         RestAssured
@@ -100,7 +114,7 @@ public class OpenshiftIT {
                                 .get()
                                 .then()
                                 .statusCode(200)
-                );
+                );*/
     }
 
     private Response callGreetingApi(){
